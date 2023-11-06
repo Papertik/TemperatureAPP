@@ -9,6 +9,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
+    android:background="@color/backgroundBlue"
     android:padding="10dp">
 
     <!--TextView for displaying Name -->
@@ -17,8 +18,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@color/white"
+        android:background="@color/BarBlue"
         android:foreground="?attr/selectableItemBackground"
+        app:tint="@color/BarBlue"
         app:cardCornerRadius="3dp"
         app:cardElevation="3dp"
         app:cardUseCompatPadding="true">
@@ -28,13 +30,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="15dp"
+            android:background="@color/BarBlue"
             android:orientation="horizontal">
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="20sp"
+
                 tools:text="Name" />
 
             <!--TextView for displaying ":" -->
@@ -43,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:text=" : "
                 android:textSize="20dp"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <!--TextView for displaying Email -->
@@ -51,7 +56,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="#454545"
+                android:textColor="#97FFFFFF"
                 android:textSize="16sp"
                 tools:text="Email" />
 

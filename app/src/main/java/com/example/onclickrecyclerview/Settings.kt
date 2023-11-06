@@ -23,12 +23,11 @@ class Settings : AppCompatActivity() {
             startActivity(intent)
         }
         // starting activity for adding device when button clicked
-        val deviceClick = findViewById<Button>(R.id.NewDevice)
-        deviceClick.setOnClickListener{
-            val intent = Intent(this, DeviceAdd::class.java)
-            startActivity(intent)
-            startDeviceAddActivity()
-        }
+//        val deviceClick = findViewById<Button>(R.id.NewDevice)
+//        deviceClick.setOnClickListener{
+//            val intent = Intent(this, DeviceAdd::class.java)
+//            startActivity(intent)
+//        }
         // creating intent for wifi settings
         val WifiClick = findViewById<Button>(R.id.WifiSettings)
         WifiClick.setOnClickListener{

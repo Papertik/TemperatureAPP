@@ -6,22 +6,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundBlue"
     tools:context=".EmployeeDetails">
 
     <!--Custom ToolBar -->
+
+    <!-- LinearLayout to place items vertically-->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#308d46"
-        app:titleTextColor="@color/white"
-        app:title="EmployeeDetails"
-
+        android:background="@color/BarBlue"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@color/white" />
 
-    <!-- LinearLayout to place items vertically-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +42,7 @@
                 android:layout_margin="10dp"
                 android:textStyle="bold"
                 android:textSize="25sp"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 />
             <TextView
                 android:id="@+id/display_name"
@@ -50,7 +51,7 @@
                 android:text=" name display"
                 android:layout_margin="10dp"
                 android:textSize="25sp"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 />
 
         </LinearLayout>
@@ -63,19 +64,19 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Email : "
+                android:text="Temperature : "
                 android:id="@+id/email"
                 android:layout_margin="10dp"
                 android:textStyle="bold"
                 android:textSize="25sp"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 />
             <TextView
                 android:id="@+id/display_email"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" name display"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
                 android:layout_margin="10dp"
                 android:textSize="25sp"
                 />
@@ -87,13 +88,10 @@
         android:id="@+id/NavBar"
         android:layout_width="411dp"
         android:layout_height="52dp"
-        android:background="#E1E2EA"
+        android:background="@color/BarBlue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
         app:titleTextColor="@color/white" />
 
     <ImageButton
@@ -101,6 +99,8 @@
         android:layout_width="193dp"
         android:layout_height="54dp"
         android:layout_marginBottom="1dp"
+        android:background="@android:color/transparent"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/NavBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.055"
@@ -113,6 +113,8 @@
         android:id="@+id/SettingsButton"
         android:layout_width="191dp"
         android:layout_height="55dp"
+        android:background="@android:color/transparent"
+        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/NavBar"
         app:layout_constraintEnd_toEndOf="@+id/NavBar"
         app:layout_constraintHorizontal_bias="0.968"
@@ -121,4 +123,17 @@
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/settings1732" />
 
+    <ImageButton
+        android:id="@+id/Templabel"
+        android:layout_width="47dp"
+        android:layout_height="53dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.741"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.666"
+        app:srcCompat="@drawable/temperature32"
+        app:tint="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>
