@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.theme.Settings">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/NavBar"
+        android:layout_width="411dp"
+        android:layout_height="52dp"
+        android:background="#E1E2EA"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:titleTextColor="@color/white" />
+
+    <ImageButton
+        android:id="@+id/HomeButton"
+        android:layout_width="193dp"
+        android:layout_height="54dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/NavBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/NavBar"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/house32" />
+
+    <ImageButton
+        android:id="@+id/SettingsButton"
+        android:layout_width="191dp"
+        android:layout_height="55dp"
+        app:layout_constraintBottom_toBottomOf="@+id/NavBar"
+        app:layout_constraintEnd_toEndOf="@+id/NavBar"
+        app:layout_constraintHorizontal_bias="0.968"
+        app:layout_constraintStart_toStartOf="@+id/NavBar"
+        app:layout_constraintTop_toTopOf="@+id/NavBar"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/settings1732" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/WifiSettings"
+        android:layout_width="400dp"
+        android:layout_height="62dp"
+        android:text="Wifi Settings"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.124" />
+</androidx.constraintlayout.widget.ConstraintLayout>

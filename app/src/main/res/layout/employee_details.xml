@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Constaintlayout -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EmployeeDetails">
+
+    <!--Custom ToolBar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#308d46"
+        app:titleTextColor="@color/white"
+        app:title="EmployeeDetails"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- LinearLayout to place items vertically-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <!-- LinearLayout to place items horizontally-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name : "
+                android:id="@+id/name"
+                android:layout_margin="10dp"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:textColor="@color/black"
+                />
+            <TextView
+                android:id="@+id/display_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" name display"
+                android:layout_margin="10dp"
+                android:textSize="25sp"
+                android:textColor="@color/black"
+                />
+
+        </LinearLayout>
+
+        <!-- LinearLayout to place items horizontally-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email : "
+                android:id="@+id/email"
+                android:layout_margin="10dp"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:textColor="@color/black"
+                />
+            <TextView
+                android:id="@+id/display_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" name display"
+                android:textColor="@color/black"
+                android:layout_margin="10dp"
+                android:textSize="25sp"
+                />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/NavBar"
+        android:layout_width="411dp"
+        android:layout_height="52dp"
+        android:background="#E1E2EA"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:titleTextColor="@color/white" />
+
+    <ImageButton
+        android:id="@+id/HomeButton"
+        android:layout_width="193dp"
+        android:layout_height="54dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="@+id/NavBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/NavBar"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/house32" />
+
+    <ImageButton
+        android:id="@+id/SettingsButton"
+        android:layout_width="191dp"
+        android:layout_height="55dp"
+        app:layout_constraintBottom_toBottomOf="@+id/NavBar"
+        app:layout_constraintEnd_toEndOf="@+id/NavBar"
+        app:layout_constraintHorizontal_bias="0.968"
+        app:layout_constraintStart_toStartOf="@+id/NavBar"
+        app:layout_constraintTop_toTopOf="@+id/NavBar"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@drawable/settings1732" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
