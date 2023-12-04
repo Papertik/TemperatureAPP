@@ -6,6 +6,9 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundBlue"
     tools:context=".ui.theme.WIfiSettings">
+
+
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_main"
         android:layout_width="411dp"
@@ -19,19 +22,33 @@
         app:layout_constraintVertical_bias="0.0"
         app:titleTextColor="@color/white" />
 
+
     <ImageButton
         android:id="@+id/Settings"
-        android:layout_width="191dp"
-        android:layout_height="55dp"
+        android:layout_width="61dp"
+        android:layout_height="58dp"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar_main"
-
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/wifi_32"
         app:tint="@color/white" />
 
+    <ImageButton
+        android:id="@+id/wifi"
+        android:layout_width="61dp"
+        android:layout_height="58dp"
+        android:layout_marginTop="15dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toTopOf="@+id/textView5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_main"
+        app:layout_constraintVertical_bias="0.133"
+        app:srcCompat="@drawable/wifi_32"
+        app:tint="@color/white" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/NavBar"
@@ -49,14 +66,14 @@
         android:layout_height="54dp"
         android:layout_marginBottom="1dp"
         android:background="@android:color/transparent"
-        app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/NavBar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintHorizontal_bias="0.073"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/NavBar"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/house32" />
+        app:srcCompat="@drawable/house32"
+        app:tint="@color/white" />
 
     <ImageButton
         android:id="@+id/SettingsButton"
@@ -71,6 +88,105 @@
         app:layout_constraintTop_toTopOf="@+id/NavBar"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/settings1732" />
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="41dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="320dp"
+        android:layout_marginBottom="22dp"
+        android:src="@drawable/bluetooth32"
+        app:layout_constraintBottom_toTopOf="@+id/bluetoothList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:tint="@color/white" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/espBut"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/BarBlue"
+        android:text="Push Over Wifi"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.371" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/select_device_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/BarBlue"
+        android:text="Refresh List"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.91" />
+
+    <ListView
+        android:id="@+id/bluetoothList"
+        android:layout_width="410dp"
+        android:layout_height="228dp"
+        android:layout_marginTop="92dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/espBut" />
+
+    <EditText
+        android:id="@+id/ssid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:ems="10"
+        android:hint="SSID"
+        android:inputType="text"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.22" />
+
+    <EditText
+        android:id="@+id/pass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="196dp"
+        android:backgroundTint="@color/white"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/espBut"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="424dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="11dp"
+        android:text="____________________________________________________________________________________"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/espBut" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,25 +1,21 @@
 package com.example.onclickrecyclerview
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.SyncStateContract
 import android.util.Log
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
-import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.onclickrecyclerview.EmployeeInfo.addEmployeeToDataList
 import com.example.onclickrecyclerview.databinding.MainActivityBinding
 import com.example.onclickrecyclerview.ui.theme.DeviceAdd
 import com.example.onclickrecyclerview.ui.theme.Settings
 
 // In this project we are going to use view binding
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
 
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -28,14 +24,15 @@ class MainActivity : AppCompatActivity() {
                 val data: Intent? = result.data
                 val NAME = data?.getStringExtra("NAME") ?: "No name provided"
                 val Address = data?.getStringExtra("Address") ?: "No value Provided"
-                val newEmployee = EmployeeInfo.addEmployeeToDataList(EmployeeList, NAME, Address)
+
+                val newEmployee = addEmployeeToDataList(NAME, Address)
+                EmployeeList.add(newEmployee)
                 (binding?.rvItemsList?.adapter as? ItemAdapter)?.updateData(EmployeeList)
             }
         }
 
     // View Binding
-    var binding:MainActivityBinding?=null
-    private var EmployeeList: ArrayList<Employee> = ArrayList()
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -45,14 +42,14 @@ class MainActivity : AppCompatActivity() {
             val NAME = data?.getStringExtra("NAME") ?: "No name provided"
             val Address = data?.getStringExtra("Address") ?: "No value Provided"
 
-            // Assuming employeeList is a class variable
-            val newEmployee = EmployeeInfo.addEmployeeToDataList(EmployeeList,NAME, Address)
 
             // Update RecyclerView adapter with the new data
             (binding?.rvItemsList?.adapter as? ItemAdapter)?.updateData(EmployeeList)
         }
     }
-
+    var binding:MainActivityBinding?=null
+    private var EmployeeList: ArrayList<Employee> = ArrayList()
+    private lateinit var adapter: ItemAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = MainActivityBinding.inflate(layoutInflater)
@@ -75,13 +72,18 @@ class MainActivity : AppCompatActivity() {
 
         // Creating an instance of the
         // adapter and passing emplist to it
-        val ItemAdapter = ItemAdapter(EmployeeList)
+        adapter = ItemAdapter(EmployeeInfo.getEmployeeData(), object : ItemAdapter.OnDeleteClickListener {
+            override fun onDeleteClick(employee: Employee) {
+                // Handle delete click here
+                EmployeeInfo.deleteEmployee(employee.id)
+                adapter.notifyDataSetChanged()
+            }
+        })
 
-        // Assign ItemAdapter instance to our RecylerView
-        binding?.rvItemsList?.adapter = ItemAdapter
+        binding?.rvItemsList?.adapter = adapter
 
         // Applying OnClickListener to our Adapter
-        ItemAdapter.setOnClickListener(object :
+        adapter.setOnClickListener(object :
             ItemAdapter.OnClickListener {
             override fun onClick(position: Int, model: Employee) {
                 val intent = Intent(this@MainActivity, EmployeeDetails::class.java)
@@ -95,13 +97,31 @@ class MainActivity : AppCompatActivity() {
             startDeviceAddActivity()
         }
     }
+    // deleet shtuff
+    override fun onDeleteClick(employee: Employee) {
+        // Handle the delete action here
+        // You can show a toast message if needed
+        val position = EmployeeList.indexOf(employee)
+        if (position != -1) {
+            EmployeeList.removeAt(position)
+            adapter.notifyItemRemoved(position)
+            Toast.makeText(this, "Employee ${employee.name} deleted", Toast.LENGTH_SHORT).show()
+
+        } else {
+            Log.e("MainActivity", "Employee not found in the list")
+        }
+    }
 
     private fun startDeviceAddActivity() {
         val intent = Intent(this, DeviceAdd::class.java)
         startForResult.launch(intent)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
+    }
     companion object{
         val NEXT_SCREEN="details_screen"
     }
-
 }

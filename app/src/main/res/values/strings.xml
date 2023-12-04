@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">OnCLickRecyclerView</string>
     <string name="title_activity_employee_details">EmployeeDetails</string>
+    <string name="title_activity_device_connection">DeviceConnectionActivity</string>
 </resources>

@@ -3,7 +3,9 @@ package com.example.onclickrecyclerview
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Toast
 import com.example.onclickrecyclerview.databinding.EmployeeDetailsBinding
 import com.example.onclickrecyclerview.ui.theme.Settings
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +16,9 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import com.example.onclickrecyclerview.Employee
+import com.example.onclickrecyclerview.ItemAdapter
+
 
 class EmployeeDetails : AppCompatActivity() {
 
@@ -47,7 +52,9 @@ class EmployeeDetails : AppCompatActivity() {
             }
         }
     }
-    var binding:EmployeeDetailsBinding?=null
+    private var binding:EmployeeDetailsBinding?=null
+    private lateinit var adapter: ItemAdapter
+    private lateinit var employeeToDelete:Employee
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = EmployeeDetailsBinding.inflate(layoutInflater)
@@ -57,6 +64,9 @@ class EmployeeDetails : AppCompatActivity() {
         binding?.toolbar?.setNavigationOnClickListener {
             onBackPressed()
         }
+
+
+
         val imagebuttonClick = findViewById<ImageButton>(R.id.HomeButton)
         imagebuttonClick.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
@@ -67,6 +77,7 @@ class EmployeeDetails : AppCompatActivity() {
         imagebutton1Click.setOnClickListener {
             val intent = Intent(this, Settings::class.java)
             startActivity(intent)}
+
 
         // creating an employee list
         // of type Employee class
@@ -79,8 +90,35 @@ class EmployeeDetails : AppCompatActivity() {
         // it the emplist is not null the it has some data and display it
         if (emplist != null) {
             binding?.displayName?.text = emplist!!.name// displaying name
-            var TSdata = fetchDataFromThingSpeak(emplist!!.email)
+            var TSdata = fetchDataFromThingSpeak(emplist!!.address)
             binding?.displayEmail?.text = TSdata // displaying email
         }
+
+    var initEmployeeList = ArrayList<Employee>()
+    adapter = ItemAdapter(initEmployeeList, object : ItemAdapter.OnDeleteClickListener {
+         override fun onDeleteClick(employee: Employee) {
+            // Set the employeeToDelete before deletion
+            employeeToDelete = employee
+            val employeeIdToDelete = employee.id
+            if (employeeIdToDelete != -1) {
+                // Call the delete method in the adapter
+                adapter.deleteEmployeeById(employeeIdToDelete)
+                finish() // Optionally, finish the activity after deletion
+                Toast.makeText(
+                    this@EmployeeDetails,
+                    "Employee ${employee.name} deleted",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+    })
+//        val deleteButton = findViewById<Button>(R.id.DeleteButton)
+//
+//        // Set an OnClickListener for the DeleteButton
+//        deleteButton.setOnClickListener {
+//            // Call the onDeleteClick method when the DeleteButton is clicked
+//            adapter.onDeleteClick(employeeToDelete)
+//        }
+        }
     }
-}

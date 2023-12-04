@@ -3,13 +3,13 @@ package com.example.onclickrecyclerview
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.onclickrecyclerview.databinding.ItemsRowBinding
 
-class ItemAdapter(
-    private var items: ArrayList<Employee>
-) :
+
+class ItemAdapter(private var employeeList: MutableList<Employee>, private val onDeleteClickListener: OnDeleteClickListener) :
     RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
     private var onClickListener: OnClickListener? = null
 
@@ -37,9 +37,9 @@ class ItemAdapter(
     // new View manually or inflate it from an XML
     // layout file.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
+        val item = employeeList[position]
         holder.tvName.text = item.name
-        holder.tvEmail.text = item.email
+        holder.tvEmail.text = item.address
         // Finally add an onclickListener to the item.
         holder.itemView.setOnClickListener {
             if (onClickListener != null) {
@@ -48,14 +48,15 @@ class ItemAdapter(
         }
     }
     fun updateData(newList: ArrayList<Employee>) {
-        items = newList
+        employeeList.clear()
+        employeeList.addAll(newList)
         notifyDataSetChanged()
         Log.d("ItemAdapter", "Data updated. New list size: ${newList.size}")
     }
 
     // Gets the number of items in the list
     override fun getItemCount(): Int {
-        return items.size
+        return employeeList.size
     }
 
     // A function to bind the onclickListener.
@@ -63,7 +64,19 @@ class ItemAdapter(
         this.onClickListener = onClickListener
     }
 
-    // onClickListener Interface
+    interface OnDeleteClickListener {
+        fun onDeleteClick(employee: Employee)
+    }
+    fun deleteEmployeeById(employeeId: Int) {
+        val position = employeeList.indexOfFirst { it.id == employeeId }
+        if (position != -1) {
+            val deletedEmployee = employeeList[position]
+            employeeList.removeAt(position)
+            notifyItemRemoved(position)
+            onDeleteClickListener.onDeleteClick(deletedEmployee)
+        }
+    }
+        // onClickListener Interface
     interface OnClickListener {
         fun onClick(position: Int, model: Employee)
     }

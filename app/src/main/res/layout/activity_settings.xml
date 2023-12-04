@@ -77,7 +77,7 @@
         android:id="@+id/WifiSettings"
         android:layout_width="400dp"
         android:layout_height="62dp"
-        android:text="Wifi Settings"
+        android:text="Wi-fi/Bluetooth"
         android:background="@color/BarBlue"
         android:textColor="@color/white"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
