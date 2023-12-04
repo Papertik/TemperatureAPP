@@ -3,8 +3,6 @@ package com.example.onclickrecyclerview
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.onclickrecyclerview.databinding.ItemsRowBinding
 
@@ -47,7 +45,7 @@ class ItemAdapter(private var employeeList: MutableList<Employee>, private val o
             }
         }
     }
-    fun updateData(newList: ArrayList<Employee>) {
+    fun updateData(newList: List<Employee>) {
         employeeList.clear()
         employeeList.addAll(newList)
         notifyDataSetChanged()
@@ -67,6 +65,9 @@ class ItemAdapter(private var employeeList: MutableList<Employee>, private val o
     interface OnDeleteClickListener {
         fun onDeleteClick(employee: Employee)
     }
+    interface OnClickListener {
+        fun onClick(position: Int, model: Employee)
+    }
     fun deleteEmployeeById(employeeId: Int) {
         val position = employeeList.indexOfFirst { it.id == employeeId }
         if (position != -1) {
@@ -77,9 +78,7 @@ class ItemAdapter(private var employeeList: MutableList<Employee>, private val o
         }
     }
         // onClickListener Interface
-    interface OnClickListener {
-        fun onClick(position: Int, model: Employee)
-    }
+
 
     // A ViewHolder describes an item view and metadata
     // about its place within the RecyclerView.
