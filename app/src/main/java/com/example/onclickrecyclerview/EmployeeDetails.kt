@@ -112,7 +112,7 @@ class EmployeeDetails : AppCompatActivity() {
                     }
                 }
             })
-
+// most updated version
             val deleteButton = findViewById<Button>(R.id.DeleteButton)
             deleteButton.setOnClickListener {
                 // Set the employeeToDelete before deletion
