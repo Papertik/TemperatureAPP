@@ -52,82 +52,81 @@ class EmployeeDetails : AppCompatActivity() {
         }
     }
 
-        private var binding: EmployeeDetailsBinding? = null
-        private lateinit var adapter: ItemAdapter
-        private lateinit var employeeToDelete: Employee
+    private var binding: EmployeeDetailsBinding? = null
+    private lateinit var adapter: ItemAdapter
+    private lateinit var employeeToDelete: Employee
 
-        override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            binding = EmployeeDetailsBinding.inflate(layoutInflater)
-            setContentView(binding?.root)
-            setSupportActionBar(binding?.toolbar)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            binding?.toolbar?.setNavigationOnClickListener {
-                onBackPressed()
-            }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = EmployeeDetailsBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
+        setSupportActionBar(binding?.toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        binding?.toolbar?.setNavigationOnClickListener {
+            onBackPressed()
+        }
 
-            val imagebuttonClick = findViewById<ImageButton>(R.id.HomeButton)
-            imagebuttonClick.setOnClickListener {
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            }
+        val imagebuttonClick = findViewById<ImageButton>(R.id.HomeButton)
+        imagebuttonClick.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
 
-            val imagebutton1Click = findViewById<ImageButton>(R.id.SettingsButton)
-            imagebutton1Click.setOnClickListener {
-                val intent = Intent(this, Settings::class.java)
-                startActivity(intent)
-            }
+        val imagebutton1Click = findViewById<ImageButton>(R.id.SettingsButton)
+        imagebutton1Click.setOnClickListener {
+            val intent = Intent(this, Settings::class.java)
+            startActivity(intent)
+        }
 
-            var emplist: Employee? = null
+        var emplist: Employee? = null
 
-            if (intent.hasExtra(MainActivity.NEXT_SCREEN)) {
-                emplist = intent.getSerializableExtra(MainActivity.NEXT_SCREEN) as Employee
-            }
+        if (intent.hasExtra(MainActivity.NEXT_SCREEN)) {
+            emplist = intent.getSerializableExtra(MainActivity.NEXT_SCREEN) as Employee
+        }
 
-            if (emplist != null) {
-                binding?.displayName?.text = emplist!!.name
-                var TSdata = fetchDataFromThingSpeak(emplist!!.address)
-                binding?.displayEmail?.text = TSdata
-            }
+        if (emplist != null) {
+            binding?.displayName?.text = emplist!!.name
+            var TSdata = fetchDataFromThingSpeak(emplist!!.address)
+            binding?.displayEmail?.text = TSdata
+        }
 
-            // Initialize the adapter once
-            val initEmployeeList = ArrayList<Employee>()
-            adapter = ItemAdapter(initEmployeeList, object : ItemAdapter.OnDeleteClickListener {
-                override fun onDeleteClick(employee: Employee) {
-                    // Set the employeeToDelete before deletion
-                    employeeToDelete = employee
-                    val employeeIdToDelete = employee.id
-                    if (employeeIdToDelete != -1) {
-                        // Update the data in the adapter
-                        val updatedEmployeeList = initEmployeeList.filter { it.id != employeeIdToDelete }
-                        adapter.updateData(updatedEmployeeList)
-
-                        adapter.notifyDataSetChanged()
-                        finish() // Optionally, finish the activity after deletion
-                        Toast.makeText(
-                            this@EmployeeDetails,
-                            "Employee ${employee.name} deleted",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            })
+        // Initialize the adapter once
+//            val initEmployeeList = ArrayList<Employee>()
+//            adapter = ItemAdapter(initEmployeeList, object : ItemAdapter.OnDeleteClickListener {
+//                override fun onDeleteClick(employee: Employee) {
+//                    // Set the employeeToDelete before deletion
+//                    employeeToDelete = employee
+//                    val employeeIdToDelete = employee.id
+//                    if (employeeIdToDelete != -1) {
+//                        // Update the data in the adapter
+//                        val updatedEmployeeList = initEmployeeList.filter { it.id != employeeIdToDelete }
+//                        adapter.updateData(updatedEmployeeList)
+//
+//                        adapter.notifyDataSetChanged()
+//                        finish() // Optionally, finish the activity after deletion
+//                        Toast.makeText(
+//                            this@EmployeeDetails,
+//                            "Employee ${employee.name} deleted",
+//                            Toast.LENGTH_SHORT
+//                        ).show()
+//                    }
+//                }
+//            })
 // most updated version
-            val deleteButton = findViewById<Button>(R.id.DeleteButton)
-            deleteButton.setOnClickListener {
-                // Set the employeeToDelete before deletion
-                employeeToDelete = emplist ?: return@setOnClickListener
-                val employeeIdToDelete = emplist?.id ?: -1
-                if (employeeIdToDelete != -1) {
-                    // Call the delete method in the adapter
-                    adapter.deleteEmployeeById(employeeIdToDelete)
-                    finish() // Optionally, finish the activity after deletion
-                    Toast.makeText(
-                        this@EmployeeDetails,
-                        "Employee ${employeeToDelete.name} deleted",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
+        val deleteButton = findViewById<Button>(R.id.DeleteButton)
+        deleteButton.setOnClickListener {
+            val emplist: Employee? =
+                intent.getSerializableExtra(MainActivity.NEXT_SCREEN) as? Employee
+            // Assuming emplist is not null
+            val employeeId = emplist?.id ?: -1
+            EmployeeInfo.deleteEmployee(employeeId)
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            Toast.makeText(
+                this@EmployeeDetails,
+                "Sensor deleted",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
+}

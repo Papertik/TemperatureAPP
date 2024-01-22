@@ -61,6 +61,11 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
             val intentSettings = Intent(this, Settings::class.java)
             startActivity(intentSettings)
         }
+// CODE FOR REFRESHING MAIN PAGE UI
+//        val refreshclick = findViewById<ImageButton>(R.id.refresh)
+//        refreshclick.setOnClickListener{
+//            adapter.updateData(EmployeeInfo.getEmployeeData())
+//        }
 
 
         // getting the employee list by
@@ -105,6 +110,7 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
         if (position != -1) {
             EmployeeList.removeAt(position)
             adapter.notifyItemRemoved(position)
+            adapter.updateData(EmployeeInfo.getEmployeeData())
             Toast.makeText(this, "Employee ${employee.name} deleted", Toast.LENGTH_SHORT).show()
 
         } else {
