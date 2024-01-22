@@ -89,30 +89,7 @@ class EmployeeDetails : AppCompatActivity() {
             var TSdata = fetchDataFromThingSpeak(emplist!!.address)
             binding?.displayEmail?.text = TSdata
         }
-
-        // Initialize the adapter once
-//            val initEmployeeList = ArrayList<Employee>()
-//            adapter = ItemAdapter(initEmployeeList, object : ItemAdapter.OnDeleteClickListener {
-//                override fun onDeleteClick(employee: Employee) {
-//                    // Set the employeeToDelete before deletion
-//                    employeeToDelete = employee
-//                    val employeeIdToDelete = employee.id
-//                    if (employeeIdToDelete != -1) {
-//                        // Update the data in the adapter
-//                        val updatedEmployeeList = initEmployeeList.filter { it.id != employeeIdToDelete }
-//                        adapter.updateData(updatedEmployeeList)
-//
-//                        adapter.notifyDataSetChanged()
-//                        finish() // Optionally, finish the activity after deletion
-//                        Toast.makeText(
-//                            this@EmployeeDetails,
-//                            "Employee ${employee.name} deleted",
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                }
-//            })
-// most updated version
+        // when delete button is clicked it finds the ID of the sensor, then deletes it using the delete function in the object class. Then displays  toast message and returens to main activity manually.
         val deleteButton = findViewById<Button>(R.id.DeleteButton)
         deleteButton.setOnClickListener {
             val emplist: Employee? =

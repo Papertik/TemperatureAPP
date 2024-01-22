@@ -37,7 +37,7 @@ class ItemAdapter(private var employeeList: MutableList<Employee>, private val o
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = employeeList[position]
         holder.tvName.text = item.name
-        holder.tvEmail.text = item.address
+        //holder.tvEmail.text = item.address
         // Finally add an onclickListener to the item.
         holder.itemView.setOnClickListener {
             if (onClickListener != null) {
@@ -86,6 +86,6 @@ class ItemAdapter(private var employeeList: MutableList<Employee>, private val o
         // Holds the TextView that
         // will add each item to
         val tvName = binding.tvName
-        val tvEmail = binding.tvEmail
+        //val tvEmail = binding.tvEmail
     }
 }

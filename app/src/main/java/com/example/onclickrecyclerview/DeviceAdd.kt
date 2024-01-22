@@ -8,6 +8,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import com.example.onclickrecyclerview.EmployeeInfo
 import com.example.onclickrecyclerview.MainActivity
 import com.example.onclickrecyclerview.R
@@ -23,17 +24,27 @@ class DeviceAdd : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
+
         // settings button to go to settings
         val imagebutton1Click = findViewById<ImageButton>(R.id.SettingsButton)
         imagebutton1Click.setOnClickListener {
             val intent = Intent(this, Settings::class.java)
-            startActivity(intent)}
+            startActivity(intent)
+        }
 
-            val addDevice = findViewById<Button>(R.id.NewDevice)
-            addDevice.setOnClickListener {
-                Log.d("DeviceAdd", "Add Device Button Clicked")
-                val deviceName = findViewById<EditText>(R.id.Name).text.toString()
-                val TScreds = findViewById<EditText>(R.id.Address).text.toString()
+        val addDevice = findViewById<Button>(R.id.NewDevice)
+        addDevice.setOnClickListener {
+            Log.d("DeviceAdd", "Add Device Button Clicked")
+            val deviceName = findViewById<EditText>(R.id.Name).text.toString()
+            val TScreds = findViewById<EditText>(R.id.Address).text.toString()
+            // Check if the deviceName already exists in the EmployeeInfo
+            val existingEmployee = EmployeeInfo.getEmployeeData().find { it.name == deviceName }
+
+            if (existingEmployee != null) {
+                // Device with the same name already exists, show an error message or handle it accordingly
+                Log.d("DeviceAdd", "Device with the same name already exists: $deviceName")
+                Toast.makeText(this, "Device with the same name already exists", Toast.LENGTH_SHORT).show()
+            } else {
                 //Passing data to homescreen
                 val intent = Intent()
                 intent.putExtra("NAME", deviceName)
@@ -42,5 +53,6 @@ class DeviceAdd : AppCompatActivity() {
                 finish()
                 Log.d("DeviceAdd", "Device Name: $deviceName, TScreds: $TScreds")
             }
+        }
     }
 }

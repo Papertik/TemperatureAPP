@@ -51,14 +51,14 @@
                 android:textStyle="bold" />
 
             <!--TextView for displaying Email -->
-            <TextView
-                android:id="@+id/tvEmail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="#97FFFFFF"
-                android:textSize="16sp"
-                tools:text="Email" />
+<!--            <TextView-->
+<!--                android:id="@+id/tvEmail"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:textColor="#97FFFFFF"-->
+<!--                android:textSize="16sp"-->
+<!--                tools:text="Email" />-->
 
         </LinearLayout>
 
