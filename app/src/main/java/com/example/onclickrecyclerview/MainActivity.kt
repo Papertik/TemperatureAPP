@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
 
     // View Binding
 
-
+//====================================================
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("MainActivity", "onActivityResult called")
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
         // getting the employee list by
         // calling getEmployeeData method
         val intent = intent
-
+//====================================================
         binding?.rvItemsList?.layoutManager = LinearLayoutManager(this)
         binding?.rvItemsList?.setHasFixedSize(true)
 
