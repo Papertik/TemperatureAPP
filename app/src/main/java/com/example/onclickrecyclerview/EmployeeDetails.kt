@@ -127,7 +127,7 @@ class EmployeeDetails : AppCompatActivity() {
 //============================================================================================
             //Plotting data, hopefully
             val lineChart: LineChart = findViewById(R.id.lineChart)
-
+            val customColors = intArrayOf(R.color.white,R.color.yellow,R.color.BarBlue,R.color.backgroundBlue            )
             val entries = mutableListOf<Entry>()
 
             for (i in HourTime.indices) {
@@ -137,12 +137,12 @@ class EmployeeDetails : AppCompatActivity() {
             val dataSet = LineDataSet(entries, "HourTemp vs HourTime")
             dataSet.setColors(intArrayOf(R.color.yellow), this) // Specify your yellow color resource
 
-            var textcolor = 2
+            var textcolor = 0
 // Customize X Axis (bottom)
-            lineChart.xAxis.textColor = textcolor
+            lineChart.xAxis.textColor = customColors[textcolor]
 
 // Customize Y Axis (left)
-            lineChart.xAxis.textColor = textcolor
+            lineChart.axisLeft.textColor = customColors[textcolor]
 
 // Hide the right Y Axis
             lineChart.axisRight.isEnabled = false
