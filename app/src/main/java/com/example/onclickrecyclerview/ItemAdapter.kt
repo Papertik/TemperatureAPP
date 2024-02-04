@@ -68,16 +68,16 @@ class ItemAdapter(private var employeeList: MutableList<Employee>, private val o
     interface OnClickListener {
         fun onClick(position: Int, model: Employee)
     }
-    fun deleteEmployeeById(employeeId: Int) {
-        val position = employeeList.indexOfFirst { it.id == employeeId }
-        if (position != -1) {
-            val deletedEmployee = employeeList[position]
-            employeeList.removeAt(position)
-            notifyItemRemoved(position)
-            onDeleteClickListener.onDeleteClick(deletedEmployee)
-        }
-    }
-        // onClickListener Interface
+//    fun deleteEmployeeById(employeeId: Int) {
+//        val position = employeeList.indexOfFirst { it.id == employeeId }
+//        if (position != -1) {
+//            val deletedEmployee = employeeList[position]
+//            employeeList.removeAt(position)
+//            notifyItemRemoved(position)
+//            onDeleteClickListener.onDeleteClick(deletedEmployee)
+//        }
+//    }
+    // onClickListener Interface
 
 
     // A ViewHolder describes an item view and metadata

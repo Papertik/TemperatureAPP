@@ -15,8 +15,8 @@
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
-        android:layout_width="412dp"
-        android:layout_height="267dp"
+        android:layout_width="match_parent"
+        android:layout_height="399dp"
 
         app:layout_constraintBottom_toTopOf="@+id/DeleteButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -34,7 +34,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@color/BarBlue" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -81,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="Current Temperature : "
+                android:text="Temperature (°F) : "
                 android:textColor="@color/white"
                 android:textSize="25sp"
                 android:textStyle="bold" />
@@ -100,7 +100,7 @@
     </LinearLayout>
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/NavBar"
-        android:layout_width="411dp"
+        android:layout_width="match_parent"
         android:layout_height="52dp"
         android:background="@color/BarBlue"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -156,7 +156,6 @@
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.774"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/toolbar"
         app:layout_constraintVertical_bias="1.0"

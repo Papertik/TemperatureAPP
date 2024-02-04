@@ -9,8 +9,8 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar_main"
-        android:layout_width="411dp"
-        android:layout_height="53dp"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
         android:background="@color/BarBlue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -35,8 +35,8 @@
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/NavBar"
-        android:layout_width="411dp"
-        android:layout_height="52dp"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
         android:background="@color/BarBlue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,7 +73,7 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/WifiSettings"
-        android:layout_width="400dp"
+        android:layout_width="match_parent"
         android:layout_height="62dp"
         android:text="Wi-fi/Bluetooth"
         android:background="@color/BarBlue"

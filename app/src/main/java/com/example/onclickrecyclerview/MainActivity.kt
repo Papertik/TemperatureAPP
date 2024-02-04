@@ -23,9 +23,10 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
 
                 val data: Intent? = result.data
                 val NAME = data?.getStringExtra("NAME") ?: "No name provided"
-                val Address = data?.getStringExtra("Address") ?: "No value Provided"
+                val Channel = data?.getStringExtra("Channel") ?: "No value Provided"
+                val FieldID= data?.getStringExtra("Field") ?: "No value Provided"
 
-                val newEmployee = addEmployeeToDataList(NAME, Address)
+                val newEmployee = addEmployeeToDataList(NAME, Channel, FieldID)
                 EmployeeList.add(newEmployee)
                 (binding?.rvItemsList?.adapter as? ItemAdapter)?.updateData(EmployeeList)
             }
@@ -39,8 +40,10 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
         Log.d("MainActivity", "onActivityResult called")
 
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-            val NAME = data?.getStringExtra("NAME") ?: "No name provided"
-            val Address = data?.getStringExtra("Address") ?: "No value Provided"
+//            val NAME = data?.getStringExtra("NAME") ?: "No name provided"
+//            val Channel = data?.getStringExtra("TSChannel") ?: "No value Provided"
+//            val FieldID= data?.getStringExtra("TSField") ?: "No value Provided"
+
 
 
             // Update RecyclerView adapter with the new data
@@ -70,7 +73,7 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
 
         // getting the employee list by
         // calling getEmployeeData method
-        val intent = intent
+
 //====================================================
         binding?.rvItemsList?.layoutManager = LinearLayoutManager(this)
         binding?.rvItemsList?.setHasFixedSize(true)

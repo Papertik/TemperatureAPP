@@ -36,7 +36,9 @@ class DeviceAdd : AppCompatActivity() {
         addDevice.setOnClickListener {
             Log.d("DeviceAdd", "Add Device Button Clicked")
             val deviceName = findViewById<EditText>(R.id.Name).text.toString()
-            val TScreds = findViewById<EditText>(R.id.Address).text.toString()
+            val TSchannel = findViewById<EditText>(R.id.ChannelNUM).text.toString()
+            val TSField = findViewById<EditText>(R.id.Field).text.toString()
+
             // Check if the deviceName already exists in the EmployeeInfo
             val existingEmployee = EmployeeInfo.getEmployeeData().find { it.name == deviceName }
 
@@ -48,10 +50,11 @@ class DeviceAdd : AppCompatActivity() {
                 //Passing data to homescreen
                 val intent = Intent()
                 intent.putExtra("NAME", deviceName)
-                intent.putExtra("Address", TScreds)
+                intent.putExtra("Channel", TSchannel)
+                intent.putExtra("Field", TSField)
                 setResult(Activity.RESULT_OK, intent)
                 finish()
-                Log.d("DeviceAdd", "Device Name: $deviceName, TScreds: $TScreds")
+                Log.d("DeviceAdd", "Device Name: $deviceName, TScreds: $TSchannel, $TSField")
             }
         }
     }

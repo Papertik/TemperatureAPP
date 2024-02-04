@@ -29,9 +29,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="15dp"
             android:background="@color/BarBlue"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="15dp">
+
             <TextView
                 android:id="@+id/tvName"
                 android:layout_width="wrap_content"
@@ -46,19 +47,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=" : "
+                android:textColor="@color/BarBlue"
                 android:textSize="20dp"
-                android:textColor="@color/white"
                 android:textStyle="bold" />
 
-            <!--TextView for displaying Email -->
-<!--            <TextView-->
-<!--                android:id="@+id/tvEmail"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:textColor="#97FFFFFF"-->
-<!--                android:textSize="16sp"-->
-<!--                tools:text="Email" />-->
+<!--            TextView for displaying Email-->
+
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="50dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#97FFFFFF"
+                android:textSize="16sp"
+                tools:text="Temp" />
 
         </LinearLayout>
 

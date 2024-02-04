@@ -6,10 +6,10 @@ object EmployeeInfo {
     private val employeeList = ArrayList<Employee>()
     private var nextId = 1
     // This Method adds an employee to the existing ArrayList
-    fun addEmployeeToDataList(name: String, address: String):Employee {
-        val employee = Employee(nextId++, name, address)
+    fun addEmployeeToDataList(name: String, Channel: String, Field: String):Employee {
+        val employee = Employee(nextId++, name, Channel, Field)
         employeeList.add(employee)
-        Log.d("EmployeeInfo", "Added employee with NAME: $name and Address: $address")
+        Log.d("EmployeeInfo", "Added employee with NAME: $name and Channel: $Channel, Field: $Field")
         return employee
     }
     fun getEmployeeData(): ArrayList<Employee> {

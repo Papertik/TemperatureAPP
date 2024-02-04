@@ -5,10 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.compose.ui.graphics.Color
 import com.example.onclickrecyclerview.databinding.EmployeeDetailsBinding
 import com.example.onclickrecyclerview.ui.theme.Settings
 import com.github.mikephil.charting.charts.LineChart
@@ -26,16 +26,21 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-
 class EmployeeDetails : AppCompatActivity() {
     //============================================================================================
+    private var emplist: Employee? = null
+    private var binding: EmployeeDetailsBinding? = null
+//    private lateinit var adapter: ItemAdapter
+//    private val tsDataList = mutableListOf<TSData>()
+
     // function for gettting data from thingspeaks .json file
-    private fun fetchDataFromThingSpeak(address: String?): Double {
+    private fun fetchDataFromThingSpeak(ChannelID: String?, fieldnum: String?): Double {
         return runBlocking {
             withContext(Dispatchers.IO) {
-                if (!address.isNullOrEmpty()) {
+                if (!ChannelID.isNullOrEmpty() or !fieldnum.isNullOrEmpty()) {
                     try {
-                        val url = URL(address)
+                        // sample URL
+                        val url = URL("https://api.thingspeak.com/channels/$ChannelID/field/$fieldnum.json")
                         val connection = url.openConnection() as HttpURLConnection
 
                         val inputStream = connection.inputStream
@@ -44,31 +49,42 @@ class EmployeeDetails : AppCompatActivity() {
 
                         val jsonObject = JSONObject(jsonResponse)
                         val feeds = jsonObject.getJSONArray("feeds")
-                        if (feeds.length() > 0) {
-                            val firstFeed = feeds.getJSONObject(0)
-                            val fieldValue = firstFeed.getString("field1")
-                            return@withContext fieldValue.toDoubleOrNull() ?: 0.0
-                        } else {
-                            return@withContext 0.0 // or throw an exception, depending on your use case
+
+                        for (i in feeds.length() - 1 downTo 0) {
+                            val currentFeed = feeds.getJSONObject(i)
+                            val fieldValue = currentFeed.optString("field$fieldnum")
+                            Log.d("ThingSpeak Addy", url.toString())
+
+                            // Check if the field is not null
+                            if (fieldValue.isNotEmpty()) {
+                                try {
+                                    return@withContext fieldValue.toDouble() // Attempt to convert to Double
+                                } catch (e: NumberFormatException) {
+                                    Log.e("ThingSpeak Addy", "Error converting to Double: ${e.message}") // this will pass an error for every feild it finds null in
+                                }
+                            }
                         }
+
+                        // Default value if no non-empty feeds are found
+                        return@withContext 0.1
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        return@withContext 0.0 // or throw an exception, depending on your use case
+                        Log.e("FetchData", "Exception: ${e.message}")
+                        return@withContext 0.2 // Error for network issues or JSON parsing issues
                     }
                 } else {
-                    return@withContext 0.0 // or throw an exception, depending on your use case
+                    return@withContext 0.3 // Input field is empty
                 }
             }
         }
     }
 
 
-    private var binding: EmployeeDetailsBinding? = null
-    private lateinit var adapter: ItemAdapter
-    private lateinit var employeeToDelete: Employee
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        super.onResume()
         binding = EmployeeDetailsBinding.inflate(layoutInflater)
         setContentView(binding?.root)
         setSupportActionBar(binding?.toolbar)
@@ -90,31 +106,31 @@ class EmployeeDetails : AppCompatActivity() {
             startActivity(intent)
         }
 
-        var emplist: Employee? = null
 
         if (intent.hasExtra(MainActivity.NEXT_SCREEN)) {
             emplist = intent.getSerializableExtra(MainActivity.NEXT_SCREEN) as Employee
         }
 //============================================================================================
 // Getting data from thingspeak
-        // first time data collectiion
-        if (emplist != null) {
-            binding?.displayName?.text = emplist!!.name
-            var TSdata = fetchDataFromThingSpeak(emplist!!.address)
-            binding?.displayEmail?.text = TSdata.toString()
-        }
-        // function for modifying data every hour.
+        // first time data collectiion ( checks every 15 min)
         val handler = Handler(Looper.getMainLooper())
-        val maxDataPoints = 24
+
+
+        // function for modifying data every hour.
+
+        val maxDataPoints = 96
         val maxDataPointsYR = 365
-        var hourTemp = mutableListOf<Double>()
-        var HourTime = mutableListOf<Int>()
-        var dayTemp = mutableListOf<Double>()
-        var dayTime = mutableListOf<Int>()
+        val hourTemp = mutableListOf<Double>()
+        val HourTime = mutableListOf<Int>()
+        val dayTemp = mutableListOf<Double>()
+        val dayTime = mutableListOf<Int>()
 
         fun updateGraphData() {
-            val TSdata = fetchDataFromThingSpeak(emplist!!.address)
-            hourTemp.add(TSdata)
+            if (emplist != null){
+            binding?.displayName?.text = emplist!!.name
+            val TSdata = fetchDataFromThingSpeak(emplist!!.channel, emplist!!.field)
+            binding?.displayEmail?.text = TSdata.toString()
+            hourTemp.add(TSdata)}
 
             //doin stuff with the hourly graph
             HourTime.clear()
@@ -137,7 +153,7 @@ class EmployeeDetails : AppCompatActivity() {
             val dataSet = LineDataSet(entries, "HourTemp vs HourTime")
             dataSet.setColors(intArrayOf(R.color.yellow), this) // Specify your yellow color resource
 
-            var textcolor = 0
+            val textcolor = 0
 // Customize X Axis (bottom)
             lineChart.xAxis.textColor = customColors[textcolor]
 
@@ -186,7 +202,7 @@ class EmployeeDetails : AppCompatActivity() {
             }
         }
         // things that happen every hour
-        handler.postDelayed({updateGraphData() }, 3600000)// 3600000 for an hour
+        handler.postDelayed({updateGraphData() }, 900020)// 3600000 for an hour, currently set to update graph and temperature every 15 min
         // things that happen every day
         handler.postDelayed({creatingDayData()}, 86400000 )
 
@@ -209,4 +225,15 @@ class EmployeeDetails : AppCompatActivity() {
             ).show()
         }
     }
+    override fun onResume() {
+        super.onResume()
+        if (emplist != null){
+            binding?.displayName?.text = emplist!!.name
+            val TSdata = fetchDataFromThingSpeak(emplist!!.channel, emplist!!.field)
+            binding?.displayEmail?.text = TSdata.toString()
+//            tsDataList.add(TSData(emplist!!.name, TSdata))
+//            adapter.notifyDataSetChanged()
+        }
+    }
+
 }

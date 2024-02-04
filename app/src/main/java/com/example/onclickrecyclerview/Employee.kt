@@ -6,5 +6,8 @@ import java.io.Serializable
 data class Employee(
     val id: Int,
     val name: String,
-    val address: String,
+    val channel: String,
+    val field: String,
 ) : Serializable
+//data class TSData(val name: String, val value: Double) :Serializable
+
