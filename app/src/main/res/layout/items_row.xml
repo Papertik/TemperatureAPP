@@ -54,7 +54,7 @@
 <!--            TextView for displaying Email-->
 
             <TextView
-                android:id="@+id/tvEmail"
+                android:id="@+id/tvTemperature"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

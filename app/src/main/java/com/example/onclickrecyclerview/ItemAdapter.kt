@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.onclickrecyclerview.databinding.ItemsRowBinding
 
 
-class ItemAdapter(private var employeeList: MutableList<Employee>, private val onDeleteClickListener: OnDeleteClickListener) :
+class ItemAdapter(private var employeeList: MutableList<Employee>, private var onDeleteClickListener: OnDeleteClickListener) :
     RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
     private var onClickListener: OnClickListener? = null
 
@@ -36,8 +36,7 @@ class ItemAdapter(private var employeeList: MutableList<Employee>, private val o
     // layout file.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = employeeList[position]
-        holder.tvName.text = item.name
-        //holder.tvEmail.text = item.address
+        holder.bind(item)
         // Finally add an onclickListener to the item.
         holder.itemView.setOnClickListener {
             if (onClickListener != null) {
@@ -61,23 +60,15 @@ class ItemAdapter(private var employeeList: MutableList<Employee>, private val o
     fun setOnClickListener(onClickListener: OnClickListener) {
         this.onClickListener = onClickListener
     }
-
+    fun setOnDeleteClickListener(onDeleteClickListener: OnDeleteClickListener){
+        this.onDeleteClickListener = onDeleteClickListener
+    }
     interface OnDeleteClickListener {
         fun onDeleteClick(employee: Employee)
     }
     interface OnClickListener {
         fun onClick(position: Int, model: Employee)
     }
-//    fun deleteEmployeeById(employeeId: Int) {
-//        val position = employeeList.indexOfFirst { it.id == employeeId }
-//        if (position != -1) {
-//            val deletedEmployee = employeeList[position]
-//            employeeList.removeAt(position)
-//            notifyItemRemoved(position)
-//            onDeleteClickListener.onDeleteClick(deletedEmployee)
-//        }
-//    }
-    // onClickListener Interface
 
 
     // A ViewHolder describes an item view and metadata
@@ -86,6 +77,10 @@ class ItemAdapter(private var employeeList: MutableList<Employee>, private val o
         // Holds the TextView that
         // will add each item to
         val tvName = binding.tvName
-        //val tvEmail = binding.tvEmail
+        val tvTemperature = binding.tvTemperature
+        fun bind(employee: Employee){
+            tvName.text = employee.name
+            tvTemperature.text = "${employee.temperature}°F"
+        }
     }
 }

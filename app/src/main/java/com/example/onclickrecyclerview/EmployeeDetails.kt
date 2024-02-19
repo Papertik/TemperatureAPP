@@ -24,11 +24,12 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.math.pow
 
 
 class EmployeeDetails : AppCompatActivity() {
     //============================================================================================
-    private var emplist: Employee? = null
+    var emplist: Employee? = null
     private var binding: EmployeeDetailsBinding? = null
 //    private lateinit var adapter: ItemAdapter
 //    private val tsDataList = mutableListOf<TSData>()
@@ -58,9 +59,10 @@ class EmployeeDetails : AppCompatActivity() {
                             // Check if the field is not null
                             if (fieldValue.isNotEmpty()) {
                                 try {
-                                    return@withContext fieldValue.toDouble() // Attempt to convert to Double
+                                    val temperature= fieldValue.toDouble()
+                                    return@withContext temperature.round(1)  // Attempt to convert to Double
                                 } catch (e: NumberFormatException) {
-                                    Log.e("ThingSpeak Addy", "Error converting to Double: ${e.message}") // this will pass an error for every feild it finds null in
+//                                    Log.e("ThingSpeak Addy", "Error converting to Double: ${e.message}") // this will pass an error for every feild it finds null in
                                 }
                             }
                         }
@@ -78,6 +80,11 @@ class EmployeeDetails : AppCompatActivity() {
             }
         }
     }
+    fun Double.round(decimals: Int): Double {
+        val multiplier = 10.0.pow(decimals)
+        return kotlin.math.round(this * multiplier) / multiplier
+    }
+
 
 
 
@@ -129,6 +136,9 @@ class EmployeeDetails : AppCompatActivity() {
             if (emplist != null){
             binding?.displayName?.text = emplist!!.name
             val TSdata = fetchDataFromThingSpeak(emplist!!.channel, emplist!!.field)
+                emplist!!.temperature = TSdata
+                val intent = Intent()
+                intent.putExtra("Temperature", emplist!!.temperature)
             binding?.displayEmail?.text = TSdata.toString()
             hourTemp.add(TSdata)}
 
@@ -136,11 +146,12 @@ class EmployeeDetails : AppCompatActivity() {
             HourTime.clear()
             for (i in 1..minOf(hourTemp.size, maxDataPoints)) {
                 HourTime.add(i) }
-            if (hourTemp.size > maxDataPoints) {
+            if (hourTemp.size   > maxDataPoints) {
                 hourTemp.removeAt(0)}
 
 
 //============================================================================================
+
             //Plotting data, hopefully
             val lineChart: LineChart = findViewById(R.id.lineChart)
             val customColors = intArrayOf(R.color.white,R.color.yellow,R.color.BarBlue,R.color.backgroundBlue            )
@@ -183,6 +194,7 @@ class EmployeeDetails : AppCompatActivity() {
         fun creatingDayData() {
             // averaging the hourly data with to make a day avg and then creating a corrospoinding time for that, we'll see if this is used
             // if the yearly graph is going to be used, we need to make sure it only happens once per day and not once per hour, so new timer block
+
             var sum = 0.0
             var avg = 0.0
             for (value in hourTemp) {
@@ -201,10 +213,15 @@ class EmployeeDetails : AppCompatActivity() {
                 dayTemp.removeAt(0)
             }
         }
+        // calculating minutes to miliseconds
+        val minutes = 1 // change
+        val hrs = 1
+        val milimin: Long = minutes * 1000L * 60L
+        val milihours: Long = hrs * 1000L * 60 * 60
         // things that happen every hour
-        handler.postDelayed({updateGraphData() }, 900020)// 3600000 for an hour, currently set to update graph and temperature every 15 min
+        handler.postDelayed({updateGraphData() }, milimin)// 3600000 for an hour, currently set to update graph and temperature every 15 min
         // things that happen every day
-        handler.postDelayed({creatingDayData()}, 86400000 )
+        handler.postDelayed({creatingDayData()}, milihours )
 
 //============================================================================================
         // Deleteing sensors
@@ -231,8 +248,7 @@ class EmployeeDetails : AppCompatActivity() {
             binding?.displayName?.text = emplist!!.name
             val TSdata = fetchDataFromThingSpeak(emplist!!.channel, emplist!!.field)
             binding?.displayEmail?.text = TSdata.toString()
-//            tsDataList.add(TSData(emplist!!.name, TSdata))
-//            adapter.notifyDataSetChanged()
+
         }
     }
 

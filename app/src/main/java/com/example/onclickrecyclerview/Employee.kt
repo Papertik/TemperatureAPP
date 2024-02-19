@@ -8,6 +8,7 @@ data class Employee(
     val name: String,
     val channel: String,
     val field: String,
-) : Serializable
+    var temperature: Double =0.0,
+):Serializable
 //data class TSData(val name: String, val value: Double) :Serializable
 
