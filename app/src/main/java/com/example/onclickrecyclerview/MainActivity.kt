@@ -201,63 +201,69 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
         startForResult.launch(intent)
     }
     private fun loadContent() {
-        isRefreshing = false
         val path = applicationContext.filesDir
         val readFrom = File(path, "SensorData.csv")
         val content = ByteArray(readFrom.length().toInt())
+        if (readFrom.exists()) {
+            var stream: FileInputStream? = null
+            try {
+                stream = FileInputStream(readFrom)
+                stream.read(content)
 
-        var stream: FileInputStream? = null
-        try {
-            stream = FileInputStream(readFrom)
-            stream.read(content)
+                val csvString = String(content)
+                // Check if the CSV string is empty
+                if (csvString.isNotEmpty()) {
+                    val lines = csvString.split("\n")
+                    val sensorList: MutableList<Employee> = mutableListOf()
 
-            val csvString = String(content)
-            // Check if the CSV string is empty
-            if (csvString.isNotEmpty()) {
-                val lines = csvString.split("\n")
-                val sensorList: MutableList<Employee> = mutableListOf()
+                    for (line in lines) {
+                        val values =
+                            line.split(",") // Adjust the delimiter based on your CSV format
 
-                for (line in lines) {
-                    val values = line.split(",") // Adjust the delimiter based on your CSV format
-
-                    // Ensure the line has enough values
-                    if (values.size >= 5) {
-                        val employee = Employee(
-                            id = values[0].toInt(),
-                            name = values[1],
-                            channel = values[2],
-                            field = values[3],
-                            temperature = values[4].toDouble(),
-                        )
-                        SensorList.add(employee)
+                        // Ensure the line has enough values
+                        if (values.size >= 5) {
+                            val employee = Employee(
+                                id = values[0].toInt(),
+                                name = values[1],
+                                channel = values[2],
+                                field = values[3],
+                                temperature = values[4].toDouble(),
+                            )
+                            SensorList.add(employee)
+                        }
                     }
-                }
 
 
-                // Assuming you have an existing adapter named adapter in your MainActivity
-                adapter.updateData(SensorList)
-                Log.d("Load Data", "DataLoaded")
-                for (employee in SensorList) {
-                    Log.d(
-                        "Employee Data",
-                        "ID: ${employee.id}, Name: ${employee.name}, Channel: ${employee.channel}, Field: ${employee.field}, Temperauture: ${employee.temperature}"
-                    )
-                    isRefreshing = true
-                }
+                    // Assuming you have an existing adapter named adapter in your MainActivity
+                    adapter.updateData(SensorList)
+                    Log.d("Load Data", "DataLoaded")
+                    for (employee in SensorList) {
+                        Log.d(
+                            "Employee Data",
+                            "ID: ${employee.id}, Name: ${employee.name}, Channel: ${employee.channel}, Field: ${employee.field}, Temperauture: ${employee.temperature}"
+                        )
+
+                    }
 //                val file = File(filesDir, "SensorData.csv")
 //                if (file.exists()) {
 //                    file.delete()
 //                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            try {
-                stream?.close()
-            } catch (e: IOException) {
+                }
+
+
+            } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                try {
+                    stream?.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
             }
+        }                else if (!readFrom.exists()) {
+            Log.d("Load Content", "File doesn't exist")
         }
+
     }
     private var isRefreshing = true // Flag to control coroutine execution
 
@@ -284,20 +290,30 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
 
 
     private fun saveData() {
+        Log.d("Save Data", "Saving data...")
+
         val path: File = applicationContext.filesDir
         val file = File(path, "SensorData.csv")
+
         try {
             if (file.exists()) {
+                Log.d("Save Data", "File exists and SensorList is not empty")
                 writeEmployeesToCsv(file, SensorList)
                 adapter.updateData(SensorList)
                 Log.d("Save Data", "SensorData.csv successfully written")
+            } else {
+                Log.d("Save Data", "File does not exist or SensorList is empty")
+
+                // Create the file if it doesn't exist
+                if (!file.exists()) {
+                    val created = file.createNewFile()
+                    Log.d("Save Data", "SensorData.csv created: $created")
+                }
             }
-//            val filePath = File(filesDir, "SensorData.csv").absolutePath
-//            Log.d("FilePath", "SensorData.csv saved at: $filePath")
         } catch (e: Exception) {
+            Log.e("Save Data", "Error in saveData(): ${e.message}")
             e.printStackTrace()
         }
-
     }
     override fun onDestroy() {
         isRefreshing = false
