@@ -64,7 +64,7 @@
         android:layout_marginBottom="1dp"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/NavBar"
-        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/NavBar"
         app:layout_constraintVertical_bias="0.0"
@@ -72,20 +72,7 @@
         app:tint="@color/yellow" />
 
     <ImageButton
-        android:id="@+id/SettingsButton"
-        android:layout_width="191dp"
-        android:layout_height="55dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="@+id/NavBar"
-        app:layout_constraintEnd_toEndOf="@+id/NavBar"
-        app:layout_constraintHorizontal_bias="0.968"
-        app:layout_constraintTop_toTopOf="@+id/NavBar"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/settings1732"
-        app:tint="@color/white" />
-
-    <ImageButton
-        android:id="@+id/addbutton"
+        android:id="@+id/MenuBtn"
         android:layout_width="49dp"
         android:layout_height="54dp"
         android:background="@android:color/transparent"
@@ -95,8 +82,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@android:drawable/ic_input_add"
-        app:tint="@color/yellow" />
+        app:tint="@color/yellow"
+        app:srcCompat="@drawable/menu24"
+        tools:layout_editor_absoluteX="345dp" />
+
+
     <!-- CODE FOR REFRESH BUTTON-->
     <!--    <ImageButton-->
     <!--        android:id="@+id/refresh"-->

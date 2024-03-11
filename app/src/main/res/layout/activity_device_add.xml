@@ -141,23 +141,11 @@
         android:layout_marginBottom="1dp"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/NavBar"
-        app:layout_constraintHorizontal_bias="0.055"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/NavBar"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@drawable/house32"
         app:tint="@color/white" />
 
-    <ImageButton
-        android:id="@+id/SettingsButton"
-        android:layout_width="191dp"
-        android:layout_height="55dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintBottom_toBottomOf="@+id/NavBar"
-        app:layout_constraintEnd_toEndOf="@+id/NavBar"
-        app:layout_constraintHorizontal_bias="0.968"
-        app:layout_constraintTop_toTopOf="@+id/NavBar"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/settings1732"
-        app:tint="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

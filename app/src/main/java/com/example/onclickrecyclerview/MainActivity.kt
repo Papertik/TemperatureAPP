@@ -2,131 +2,76 @@ package com.example.onclickrecyclerview
 
 import android.app.Activity
 import android.content.Intent
-import android.health.connect.datatypes.units.Temperature
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.compose.animation.core.updateTransition
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.onclickrecyclerview.EmployeeInfo.addEmployeeToDataList
-import com.example.onclickrecyclerview.EmployeeInfo.writeEmployeesToCsv
 import com.example.onclickrecyclerview.databinding.MainActivityBinding
 import com.example.onclickrecyclerview.ui.theme.DeviceAdd
-import com.example.onclickrecyclerview.ui.theme.Settings
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import com.example.onclickrecyclerview.ui.theme.WIfiSettings
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import org.json.JSONObject
-import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-import kotlin.math.pow
-import kotlin.math.round
+import java.util.function.DoubleBinaryOperator
 
 // In this project we are going to use view binding
-
-
-
 class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
-    fun fetchDataFromThingSpeak(ChannelID: String?, fieldnum: String?): Double {
-        return runBlocking {
-            withContext(Dispatchers.IO) {
-                if (!ChannelID.isNullOrEmpty() or !fieldnum.isNullOrEmpty()) {
-                    try {
-                        // sample URL
-                        val url = URL("https://api.thingspeak.com/channels/$ChannelID/field/$fieldnum.json")
-                        val connection = url.openConnection() as HttpURLConnection
-
-                        val inputStream = connection.inputStream
-                        val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-                        val jsonResponse = bufferedReader.readText()
-
-                        val jsonObject = JSONObject(jsonResponse)
-                        val feeds = jsonObject.getJSONArray("feeds")
-
-                        for (i in feeds.length() - 1 downTo 0) {
-                            val currentFeed = feeds.getJSONObject(i)
-                            val fieldValue = currentFeed.optString("field$fieldnum")
-                            Log.d("ThingSpeak Addy", url.toString())
-
-                            // Check if the field is not null
-                            if (fieldValue.isNotEmpty()) {
-                                try {
-                                    val temperature= fieldValue.toDouble()
-                                    return@withContext temperature.round(1)  // Attempt to convert to Double
-                                } catch (e: NumberFormatException) {
-//                                    Log.e("ThingSpeak Addy", "Error converting to Double: ${e.message}") // this will pass an error for every feild it finds null in
-                                }
-                            }
-                        }
-
-                        // Default value if no non-empty feeds are found
-                        return@withContext 0.1
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        Log.e("FetchData", "Exception: ${e.message}")
-                        return@withContext 0.2 // Error for network issues or JSON parsing issues
-                    }
-                } else {
-                    return@withContext 0.3 // Input field is empty
-                }
-            }
-        }
+    companion object {
+        const val NEXT_SCREEN = "details_screen"
     }
-    fun Double.round(decimals: Int): Double {
-        val multiplier = 10.0.pow(decimals)
-        return round(this * multiplier) / multiplier
-    }
+
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
-
                 val data: Intent? = result.data
                 val NAME = data?.getStringExtra("NAME") ?: "No name provided"
                 val Channel = data?.getStringExtra("Channel") ?: "No value Provided"
-                val FieldID= data?.getStringExtra("Field") ?: "No value Provided"
-                var Temperature = fetchDataFromThingSpeak(Channel,FieldID)
-
-                val newEmployee = addEmployeeToDataList(NAME, Channel, FieldID, Temperature)
-                SensorList.add(newEmployee)
-                (binding?.rvItemsList?.adapter as? ItemAdapter)?.updateData(SensorList)
+                val FieldID = data?.getStringExtra("Field") ?: "No value Provided"
+                // Fetch the list of temperatures using suspend function
+                val temperatureList = runBlocking {
+                    SensorInfo.fetchDataFromThingSpeak(Channel, FieldID)
+                }
+                val recentTemperature = SensorInfo.getMostRecentTemperature(temperatureList)
+                val newsensor = Sensor(
+                    id = homeScreenSensors.size + 1,
+                    name = NAME,
+                    channel = Channel,
+                    field = FieldID,
+                    tempList = temperatureList.toMutableList(),
+                    temperature = recentTemperature
+                )
+                homeScreenSensors.add(newsensor)
+                (binding?.rvItemsList?.adapter as? ItemAdapter)?.updateData(homeScreenSensors)
             }
         }
 
     // View Binding
+    var binding: MainActivityBinding? = null
+    private var homeScreenSensors: ArrayList<Sensor> = ArrayList()
+    private lateinit var adapter: ItemAdapter
+    private val handler = Handler(Looper.getMainLooper())
+    private val updateIntervalMillis: Long = 15 * 60 * 1000 // 15 minutes in milliseconds
+
 
     //====================================================
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Log.d("MainActivity", "onActivityResult called")
-
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
-//            val NAME = data?.getStringExtra("NAME") ?: "No name provided"
-//            val Channel = data?.getStringExtra("TSChannel") ?: "No value Provided"
-//            val FieldID= data?.getStringExtra("TSField") ?: "No value Provided"
-
-
-
             // Update RecyclerView adapter with the new data
-            (binding?.rvItemsList?.adapter as? ItemAdapter)?.updateData(SensorList)
+            adapter.updateData(homeScreenSensors)
         }
     }
-    var binding:MainActivityBinding?=null
-    private var SensorList: ArrayList<Employee> = ArrayList()
-    private lateinit var adapter: ItemAdapter
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,65 +79,85 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
         setContentView(binding?.root)
 
         // settings button to go to settings
-        val imagebutton1Click = findViewById<ImageButton>(R.id.SettingsButton)
-        imagebutton1Click.setOnClickListener {
-            saveData()
-            val intentSettings = Intent(this, Settings::class.java)
-            startActivity(intentSettings)
-        }
-
-// CODE FOR REFRESHING MAIN PAGE UI
-//        val refreshclick = findViewById<ImageButton>(R.id.refresh)
-//        refreshclick.setOnClickListener{
-//            adapter.updateData(EmployeeInfo.getEmployeeData())
-//        }
 
         binding?.rvItemsList?.layoutManager = LinearLayoutManager(this)
         binding?.rvItemsList?.setHasFixedSize(true)
+        // Creating an instance of the adapter and passing emplist to it
 
-        // Creating an instance of the
-        // adapter and passing emplist to it
-        adapter = ItemAdapter(EmployeeInfo.getEmployeeData(), object : ItemAdapter.OnDeleteClickListener {
-            override fun onDeleteClick(employee: Employee) {
-                // Handle delete click here
-                EmployeeInfo.deleteEmployee(employee.id)
-                adapter.notifyDataSetChanged()
-                saveData()
-            }
-        })
-        loadContent()
-        saveData()
-        binding?.rvItemsList?.adapter = adapter
-
-        // Applying OnClickListener to our Adapter
+        // handling delete click in item adapter
+        adapter =
+            ItemAdapter(SensorInfo.getsensorData(), object : ItemAdapter.OnDeleteClickListener {
+                override fun onDeleteClick(sensor: Sensor) {
+                    // Handle delete click here
+                    SensorInfo.deletesensor(sensor.id)
+                    adapter.notifyDataSetChanged()
+                }
+            })
         adapter.setOnClickListener(object :
             ItemAdapter.OnClickListener {
-            override fun onClick(position: Int, model: Employee) {
-                val intent = Intent(this@MainActivity, EmployeeDetails::class.java)
-                // Passing the data to the
-                // EmployeeDetails Activity
+            override fun onClick(position: Int, model: Sensor) {
+                val intent = Intent(this@MainActivity, sensorDetails::class.java)
+                // Passing the data to the sensorDetails Activity
                 intent.putExtra(NEXT_SCREEN, model)
                 startActivity(intent)
-                saveData()
+                //saveData()
             }
         })
-        binding?.addbutton?.setOnClickListener {
-            startDeviceAddActivity()
+        binding?.rvItemsList?.adapter = adapter
+
+        loadContent() //<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<-<- LOAD
+        schedulePeriodicUpdates()//update homescreen temp display every minute
+
+//        val imagebutton1Click = findViewById<ImageButton>(R.id.SettingsButton)
+//        imagebutton1Click.setOnClickListener {
+//            saveData()
+//            val intentSettings = Intent(this, Settings::class.java)
+//            startActivity(intentSettings)
+//        }
+        // Handling poppup menu logic
+        binding?.MenuBtn?.setOnClickListener { button ->
+            val setMenu = PopupMenu(this@MainActivity, button)
+            setMenu.menuInflater.inflate(R.menu.settings_menu, setMenu.menu)
+            setMenu.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.Wifi -> {
+                        // Open WifiActivity
+                        val intent = Intent(this@MainActivity, WIfiSettings::class.java)
+                        startActivity(intent)
+                        true
+                    }
+
+                    R.id.AddSensor -> {
+                        // Open AddSensorActivity
+                        startDeviceAddActivity()
+                        true
+                    }
+
+                    R.id.Clear -> {
+                        // Open ClearSensorsActivity
+                        clearData(homeScreenSensors)
+                        true
+                    }
+
+                    else -> false
+                }
+            }
+            setMenu.show()
         }
     }
     //====================================================
 
     // deleet shtuff
-    override fun onDeleteClick(employee: Employee) {
-        // Handle the delete action here
-        // You can show a toast message if needed
-        val position = SensorList.indexOf(employee)
+    // handling delete click in main activity
+    override fun onDeleteClick(sensor: Sensor) {
+        val position = homeScreenSensors.indexOf(sensor)
         if (position != -1) {
-            SensorList.removeAt(position)
+            homeScreenSensors.removeAt(position)
             adapter.notifyItemRemoved(position)
-            Toast.makeText(this, "Employee ${employee.name} deleted", Toast.LENGTH_SHORT).show()
+            saveData()
+            Toast.makeText(this, "sensor ${sensor.name} deleted", Toast.LENGTH_SHORT).show()
         } else {
-            Log.e("MainActivity", "Employee not found in the list")
+            Log.e("MainActivity", "sensor not found in the list")
         }
     }
 
@@ -200,6 +165,10 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
         val intent = Intent(this, DeviceAdd::class.java)
         startForResult.launch(intent)
     }
+
+    //
+    //====================================================
+    // functions to handle data persistance
     private fun loadContent() {
         val path = applicationContext.filesDir
         val readFrom = File(path, "SensorData.csv")
@@ -214,43 +183,49 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
                 // Check if the CSV string is empty
                 if (csvString.isNotEmpty()) {
                     val lines = csvString.split("\n")
-                    val sensorList: MutableList<Employee> = mutableListOf()
 
                     for (line in lines) {
-                        val values =
-                            line.split(",") // Adjust the delimiter based on your CSV format
+                        val values = line.split(",")
 
                         // Ensure the line has enough values
-                        if (values.size >= 5) {
-                            val employee = Employee(
+                        if (values.size >= 6) { // Assuming tempList is at index 5
+                            val fetchedsensor = Sensor(
                                 id = values[0].toInt(),
                                 name = values[1],
                                 channel = values[2],
                                 field = values[3],
-                                temperature = values[4].toDouble(),
+                                tempList = mutableListOf(),
+                                temperature = 0.0 // Initialize with a default value, you may adjust this
                             )
-                            SensorList.add(employee)
+
+                            val temperatureList = runBlocking {
+                                SensorInfo.fetchDataFromThingSpeak(fetchedsensor.channel, fetchedsensor.field)
+                            }
+                            val recentTemperature = SensorInfo.getMostRecentTemperature(temperatureList.reversed())
+
+                            // Update the fetched sensor with the temperature list and recent temperature
+                            fetchedsensor.tempList=(temperatureList)
+                            fetchedsensor.temperature = recentTemperature
+
+                            homeScreenSensors.add(fetchedsensor)
                         }
                     }
 
-
                     // Assuming you have an existing adapter named adapter in your MainActivity
-                    adapter.updateData(SensorList)
+                    adapter.updateData(homeScreenSensors)
                     Log.d("Load Data", "DataLoaded")
-                    for (employee in SensorList) {
+                    for (sensor in homeScreenSensors) {
+                        updateHomeTemp()
                         Log.d(
-                            "Employee Data",
-                            "ID: ${employee.id}, Name: ${employee.name}, Channel: ${employee.channel}, Field: ${employee.field}, Temperauture: ${employee.temperature}"
+                            "sensor Data",
+                            "ID: ${sensor.id}, Name: ${sensor.name}, Channel: ${sensor.channel}, Field: ${sensor.field}, Hist data: ${sensor.tempList}"
                         )
-
                     }
 //                val file = File(filesDir, "SensorData.csv")
 //                if (file.exists()) {
 //                    file.delete()
 //                }
                 }
-
-
             } catch (e: Exception) {
                 e.printStackTrace()
             } finally {
@@ -260,34 +235,10 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
                     e.printStackTrace()
                 }
             }
-        }                else if (!readFrom.exists()) {
+        } else if (!readFrom.exists()) {
             Log.d("Load Content", "File doesn't exist")
         }
-
     }
-    private var isRefreshing = true // Flag to control coroutine execution
-
-//    private fun fetchAndUpdateTemp() {
-//        CoroutineScope(Dispatchers.IO).launch {
-//            // Perform background tasks, such as network operations
-//            while(isRefreshing) {
-//                Log.d("FetchAndUpdateTemp", "Running...")
-//                Log.d("FetchingData", "$SensorList")
-//
-//                for (employee in SensorList) {
-//                    val temperature = fetchDataFromThingSpeak(employee.channel, employee.field)
-//                    employee.temperature = temperature
-//                    Log.d("FetchAndUpdateTemp", "Employee: ${employee.name}, Temperature: $temperature")
-//
-//                }
-//            // Switch to the main thread to update the UI
-//            withContext(Dispatchers.Main) {
-//                adapter.notifyDataSetChanged()
-//                delay(1000)
-//            }}
-//        }
-//    }
-
 
     private fun saveData() {
         Log.d("Save Data", "Saving data...")
@@ -298,8 +249,7 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
         try {
             if (file.exists()) {
                 Log.d("Save Data", "File exists and SensorList is not empty")
-                writeEmployeesToCsv(file, SensorList)
-                adapter.updateData(SensorList)
+                SensorInfo.writesensorsToCsv(file, homeScreenSensors)
                 Log.d("Save Data", "SensorData.csv successfully written")
             } else {
                 Log.d("Save Data", "File does not exist or SensorList is empty")
@@ -315,31 +265,68 @@ class MainActivity : AppCompatActivity(), ItemAdapter.OnDeleteClickListener {
             e.printStackTrace()
         }
     }
+
+    private fun clearData(tobeCleared: ArrayList<Sensor>) {
+        // Build the confirmation dialog
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Confirmation")
+        builder.setMessage("Are you sure you want to clear all data?")
+
+        // Set up the buttons
+        builder.setPositiveButton("Yes") { _, _ ->
+            for (sensor in tobeCleared) {
+                SensorInfo.deletesensor(sensor.id)
+            }
+            val path: File = applicationContext.filesDir
+            val file = File(path, "SensorData.csv")
+            if (file.exists()) {
+                file.delete()
+                recreate()
+                adapter.notifyDataSetChanged()
+
+
+            } else {
+                Log.d("ClearData", "File Does not exist")
+            }
+
+            Toast.makeText(this, "Data cleared", Toast.LENGTH_SHORT).show()
+        }
+
+        builder.setNegativeButton("No") { _, _ ->
+            // User clicked No, do nothing
+        }
+
+        // Show the dialog
+        val dialog: AlertDialog = builder.create()
+        dialog.show()
+    }
+
+    private fun schedulePeriodicUpdates() {
+        handler.postDelayed({
+            updateHomeTemp()
+            schedulePeriodicUpdates()
+        }, updateIntervalMillis)
+    }
+
+    private fun updateHomeTemp() {
+        lifecycleScope.launch {
+            for (sensor in homeScreenSensors) {
+                val temperatureList = SensorInfo.fetchDataFromThingSpeak(sensor.channel, sensor.field)
+                // Get the most recent temperature from the list
+                val newTemp = SensorInfo.getMostRecentTemperature(temperatureList.reversed())
+                adapter.updateTemperature(sensor.id, newTemp)
+            }
+        }
+    }
+
     override fun onDestroy() {
-        isRefreshing = false
         saveData()
         super.onDestroy()
         binding = null
     }
     override fun onPause() {
-        isRefreshing = false
-        saveData()
+//        saveData()         // Save the data when the activity loses focus
         super.onPause()
-        // Save the data when the activity loses focus
-    }
 
-//    override fun onResume() {
-//        super.onResume()
-//        isRefreshing = true
-//        fetchAndUpdateTemp()
-//
-//    }
-    override fun onBackPressed() {
-        super.onBackPressed()
-        saveData()
-        // Save the data when the back button is pressed
-    }
-    companion object{
-        const val NEXT_SCREEN="details_screen"
     }
 }

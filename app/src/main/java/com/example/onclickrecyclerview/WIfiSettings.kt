@@ -51,11 +51,11 @@ class WIfiSettings : AppCompatActivity() {
             startActivity(intent)
         }
         // settings button to go to settings
-        val imagebutton1Click = findViewById<ImageButton>(R.id.SettingsButton)
-        imagebutton1Click.setOnClickListener {
-            val intent = Intent(this, Settings::class.java)
-            startActivity(intent)
-        }
+//        val imagebutton1Click = findViewById<ImageButton>(R.id.SettingsButton)
+//        imagebutton1Click.setOnClickListener {
+//            val intent = Intent(this, Settings::class.java)
+//            startActivity(intent)
+//        }
         val espButton = findViewById<Button>(R.id.espBut)
         espButton.setOnClickListener {
             @Override
@@ -113,10 +113,8 @@ class WIfiSettings : AppCompatActivity() {
                 val deviceName = uniqueDevice.name ?: "Unknown Device"
                 adapter.add(deviceName)
             }
-
             // Notify the adapter that the data has changed
             adapter.notifyDataSetChanged()
-
             // Set the adapter to the ListView
             bluetoothList.adapter = adapter
         }
@@ -147,9 +145,7 @@ class WIfiSettings : AppCompatActivity() {
                         if (leScanCallback != null) {
                             bluetoothLeScanner.stopScan(leScanCallback!!)
                         }
-
                     }
-
                 }, SCAN_PERIOD)
                 scanning = true
                 if (ActivityCompat.checkSelfPermission(

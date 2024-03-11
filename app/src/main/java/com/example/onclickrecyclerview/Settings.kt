@@ -7,12 +7,13 @@ import android.widget.Button
 import android.widget.ImageButton
 import com.example.onclickrecyclerview.MainActivity
 import com.example.onclickrecyclerview.R
+import java.io.File
 
 class Settings : AppCompatActivity() {
     private fun startDeviceAddActivity() {
-        val ADD_EMPLOYEE_REQUEST = 1
+        val ADD_sensor_REQUEST = 1
         val intent = Intent(this, DeviceAdd::class.java)
-        startActivityForResult(intent, ADD_EMPLOYEE_REQUEST)
+        startActivityForResult(intent, ADD_sensor_REQUEST)
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,5 +35,10 @@ class Settings : AppCompatActivity() {
             val intent = Intent(this, WIfiSettings::class.java)
             startActivity(intent)
         }
+
+        val Clear= findViewById<Button>(R.id.ClearData)
+        Clear.setOnClickListener{
+        }
     }
+
 }
